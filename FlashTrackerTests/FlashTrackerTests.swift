@@ -45,7 +45,11 @@ class FlashTrackerTests: XCTestCase {
                 
                 // then
                 XCTAssertNil(responseError)
-                XCTAssertEqual(statusCode, 200)
+                if (statusCode != 200) {
+                    
+                    XCTFail("Rest call failed")
+                    return
+                }
                 
                 guard let responseData = data else {
                     
@@ -66,6 +70,9 @@ class FlashTrackerTests: XCTestCase {
                             XCTAssertNotNil(vehicleDetails["latitude"], "Vehicle latitude not available for index \(index)")
                             XCTAssertNotNil(vehicleDetails["longitude"], "Vehicle longitude not available for index \(index)")
                         }
+                    } else {
+                        
+                        XCTFail("Unexpected response")
                     }
                 }
                 catch {
@@ -103,7 +110,11 @@ class FlashTrackerTests: XCTestCase {
                 
                 // then
                 XCTAssertNil(responseError)
-                XCTAssertEqual(statusCode, 200)
+                if (statusCode != 200) {
+                    
+                    XCTFail("Rest call failed")
+                    return
+                }
                 
                 guard let responseData = data else {
                     
@@ -128,6 +139,9 @@ class FlashTrackerTests: XCTestCase {
                         XCTAssertNotNil(resultantModel.longitude, "Vehicle longitude not available")
                         XCTAssertNotNil(resultantModel.name, "Vehicle name not available")
                         XCTAssertNotNil(resultantModel.batteryLevel, "Vehicle battery level not available")
+                    } else {
+                        
+                        XCTFail("Unexpected response")
                     }
                 }
                 catch {

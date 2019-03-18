@@ -26,14 +26,19 @@ class FlashTrackerTests: XCTestCase {
     // Asynchronous test: faster fail
     func testVehiclesInfoFromREST() {
         // given
-        let url = URL(string: "https://my-json-server.typicode.com/FlashScooters/Challenge/vehicles")
+        guard let url = URL(string: "https://my-json-server.typicode.com/FlashScooters/Challenge/vehicles") else {
+            
+            XCTFail("URL not available")
+            return
+        }
+        
         let promise = expectation(description: "Completion handler invoked")
         var statusCode: Int?
         var responseError: Error?
         
         // when
         if Reachability().isConnectedToNetwork() {
-            let dataTask = sessionUnderTest.dataTask(with: url!) { data, response, error in
+            let dataTask = sessionUnderTest.dataTask(with: url) { data, response, error in
                 statusCode = (response as? HTTPURLResponse)?.statusCode
                 responseError = error
                 promise.fulfill()
@@ -42,8 +47,14 @@ class FlashTrackerTests: XCTestCase {
                 XCTAssertNil(responseError)
                 XCTAssertEqual(statusCode, 200)
                 
+                guard let responseData = data else {
+                    
+                    XCTFail("Data not available")
+                    return
+                }
+                
                 do {
-                    let response = try JSONSerialization.jsonObject(with: data!, options:.allowFragments)
+                    let response = try JSONSerialization.jsonObject(with: responseData, options:.allowFragments)
                     
                     XCTAssertNotNil(response, "Parsed json is empty")
                     
@@ -63,13 +74,21 @@ class FlashTrackerTests: XCTestCase {
             }
             dataTask.resume()
             waitForExpectations(timeout: 5, handler: nil)
+        } else {
+            
+            XCTFail("Internet conntection not available")
         }
     }
     
     // Asynchronous test: faster fail
     func testDetailedVehicleInfoFromREST() {
         // given
-        let url = URL(string: "https://my-json-server.typicode.com/FlashScooters/Challenge/vehicles/1")
+        guard let url = URL(string: "https://my-json-server.typicode.com/FlashScooters/Challenge/vehicles/1") else {
+            
+            XCTFail("URL not available")
+            return
+        }
+        
         let promise = expectation(description: "Completion handler invoked")
         var statusCode: Int?
         var responseError: Error?
@@ -77,7 +96,7 @@ class FlashTrackerTests: XCTestCase {
         // when
         if Reachability().isConnectedToNetwork() {
            
-            let dataTask = sessionUnderTest.dataTask(with: url!) { data, response, error in
+            let dataTask = sessionUnderTest.dataTask(with: url) { data, response, error in
                 statusCode = (response as? HTTPURLResponse)?.statusCode
                 responseError = error
                 promise.fulfill()
@@ -86,8 +105,14 @@ class FlashTrackerTests: XCTestCase {
                 XCTAssertNil(responseError)
                 XCTAssertEqual(statusCode, 200)
                 
+                guard let responseData = data else {
+                    
+                    XCTFail("Data not available")
+                    return
+                }
+                
                 do {
-                    let response = try JSONSerialization.jsonObject(with: data!, options:.allowFragments)
+                    let response = try JSONSerialization.jsonObject(with: responseData, options:.allowFragments)
                     
                     XCTAssertNotNil(response, "Parsed json is empty")
                     
@@ -101,6 +126,8 @@ class FlashTrackerTests: XCTestCase {
                         XCTAssertNotNil(resultantModel.id, "Vehicle id not available")
                         XCTAssertNotNil(resultantModel.latitude, "Vehicle latitude not available")
                         XCTAssertNotNil(resultantModel.longitude, "Vehicle longitude not available")
+                        XCTAssertNotNil(resultantModel.name, "Vehicle name not available")
+                        XCTAssertNotNil(resultantModel.batteryLevel, "Vehicle battery level not available")
                     }
                 }
                 catch {
@@ -109,6 +136,9 @@ class FlashTrackerTests: XCTestCase {
             }
             dataTask.resume()
             waitForExpectations(timeout: 5, handler: nil)
+        } else {
+            
+            XCTFail("Internet conntection not available")
         }
     }
 

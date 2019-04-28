@@ -10,14 +10,14 @@ import UIKit
 
 extension UIAlertController {
     
-    class func showSimpleAlert ( message: String , inViewController: UIViewController?){
+    class func showSimpleAlert ( message: String , inViewController: UIViewController){
         let title = "Flash Tracker"
         let okayButtonTitle = "Okay"
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: okayButtonTitle, style: .default, handler: nil))
         
-        inViewController?.present(alert, animated: true , completion: nil)
+        inViewController.present(alert, animated: true , completion: nil)
     }
 }
 

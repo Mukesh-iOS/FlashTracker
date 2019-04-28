@@ -56,13 +56,18 @@ class FTViewController: UIViewController {
         
         viewModel?.error.notify(notifier: { [weak self] (error: FTError) in
             
-            self?.activityView.hideActivity()
+            guard let strongSelf = self else {
+                
+                return
+            }
+            
+            strongSelf.activityView.hideActivity()
             
             switch error {
                 
             case .Invalid(let message):
                 
-                UIAlertController.showSimpleAlert(message: message, inViewController: self)
+                UIAlertController.showSimpleAlert(message: message, inViewController: strongSelf)
             }
         })
         

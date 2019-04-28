@@ -88,11 +88,11 @@ struct FTWebRequest {
     }
 }
 
-func decode<T: Decodable>(json: Data, asA thing: T.Type) -> T? {
+private func decode<T: Decodable>(json: Data, asA thing: T.Type) -> T? {
     return try? JSONDecoder().decode(thing, from: json)
 }
 
-func decodeArray<T: Decodable>(json: Data, asA thing: T.Type) -> [T] {
+private func decodeArray<T: Decodable>(json: Data, asA thing: T.Type) -> [T] {
     
     return decode(json: json, asA: [T].self) ?? []
 }

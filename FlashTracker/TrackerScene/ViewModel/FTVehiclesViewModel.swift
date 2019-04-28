@@ -25,7 +25,7 @@ class FTVehiclesViewModel: NSObject {
     
     func getVehicles() {
         
-        FTWebRequest.fetchDetailsWith(serviceURL: URL(string: FTServiceHelper.listOfVehicles)) { [weak self] (info, errorInfo) in
+        FTWebRequest.fetchDetailsWith(serviceURL: URL(string: FTServiceHelper.listOfVehicles), resultStruct: VehicleInfo.self) { [weak self] (info, errorInfo) in
             
             self?.infoList.value = info as? [VehicleInfo]
             if let errorDescription = errorInfo {
@@ -45,16 +45,17 @@ class FTVehiclesViewModel: NSObject {
         }
 
         let serviceURL = FTServiceHelper.vehicleDetail(vehicleId)
-        FTWebRequest.fetchDetailsWith(serviceURL: URL(string: serviceURL)) { [weak self] (info, errorInfo) in
-
+        
+        FTWebRequest.fetchDetailsWith(serviceURL: URL(string: serviceURL), resultStruct: VehicleInfo.self) { [weak self] (info, errorInfo) in
+            
             self?.info.value = info as? VehicleInfo
             self?.vehicleInfoDataPreparation()
-
+            
             if let errorDescription = errorInfo {
-
+                
                 self?.error.value = FTError.Invalid(errorDescription)
             } else {
-
+                
                 completion()
             }
         }

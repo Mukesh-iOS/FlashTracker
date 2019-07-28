@@ -99,12 +99,12 @@ class FTViewController: UIViewController {
         }
         
         for vehicle in vehicleList {
-            
-            assert(vehicle.latitude != nil && vehicle.longitude != nil, "Geolocation should not be nil")
-        
-            let point = FTVehicleAnnotation(coordinate: CLLocationCoordinate2D(latitude: vehicle.latitude! , longitude: vehicle.longitude!))
-            point.vehicleID = vehicle.id
-            mapView.addAnnotation(point)
+            if let vehicleLatitude = vehicle.latitude, let vehicleLongitude = vehicle.longitude {
+                
+                let point = FTVehicleAnnotation(coordinate: CLLocationCoordinate2D(latitude: vehicleLatitude , longitude: vehicleLongitude))
+                point.vehicleID = vehicle.id
+                mapView.addAnnotation(point)
+            }
         }
     }
 }
@@ -134,7 +134,7 @@ extension FTViewController: MKMapViewDelegate {
         let annotationGesture = UITapGestureRecognizer(target: self, action: #selector(handleAnnotationGesture(sender:)))
         view.addGestureRecognizer(annotationGesture)
         
-        let vehicleID = (view.annotation as! FTVehicleAnnotation).vehicleID ?? nil
+        let vehicleID = (view.annotation as? FTVehicleAnnotation)?.vehicleID ?? nil
         
         // Execution will be stopped if same annotation is selected again ( Annotation will be removed in gesture recognizer hanler )
         if isDetailedAnnotationVisible && detailedAnnotationViewVehicleId == vehicleID {
@@ -168,7 +168,12 @@ extension FTViewController: MKMapViewDelegate {
             view.addSubview(calloutView)
             isDetailedAnnotationVisible = true
             detailedAnnotationViewVehicleId = (view.annotation as? FTVehicleAnnotation)?.vehicleID ?? nil
-            mapView.setCenter((view.annotation?.coordinate)!, animated: true)
+            
+            if let mapCoordinate = view.annotation?.coordinate {
+                
+                mapView.setCenter(mapCoordinate, animated: true)
+            }
+            
             return
         }
         

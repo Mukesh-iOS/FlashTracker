@@ -34,8 +34,13 @@ extension Date {
         // change to a readable time format and change to local time zone
         dateFormatter.dateFormat = "MMM d, yyyy - h:mm a"
         dateFormatter.timeZone = TimeZone.current
-        let localTime = dateFormatter.string(from: date!)
         
+        guard let convertedDate = date else {
+            
+            return ""
+        }
+        
+        let localTime = dateFormatter.string(from: convertedDate)
         return localTime
     }
     

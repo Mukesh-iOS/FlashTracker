@@ -21,7 +21,12 @@ struct FTWebRequest {
         
         if Reachability().isConnectedToNetwork() {
             
-            URLSession.shared.dataTask(with: serviceURL!, completionHandler: {
+            guard let serviceURL = serviceURL else {
+                
+                return
+            }
+            
+            URLSession.shared.dataTask(with: serviceURL, completionHandler: {
                 (data, response, error) in
                 
                 guard error == nil else {
@@ -45,14 +50,14 @@ struct FTWebRequest {
                     case StatusCode.Success:
                         
                         do {
-                            let response = try JSONSerialization.jsonObject(with: data!, options:.allowFragments)
+                            let response = try JSONSerialization.jsonObject(with: responseData, options:.allowFragments)
                             
                             // This code will be executed for a response json of dictionary format
                             if response is [String: Any] {
                                 
                                 let decoder = JSONDecoder()
                                 
-                                let resultantModel = try decoder.decode(resultStruct.self, from: data!)
+                                let resultantModel = try decoder.decode(resultStruct.self, from: responseData)
                                 DispatchQueue.main.async {
                                     completionHandler(resultantModel, nil)
                                 }
